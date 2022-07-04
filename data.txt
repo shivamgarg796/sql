@@ -1,0 +1,260 @@
+select * from courses inner join teachers on courses.teacherid = teachers.teacherid;
+
+select * from courses left J0in teachers on courses.teacherid = teachers.teacherid;
+
+select* from courses right join teachers on courses.teacherid = teachers.teacherid;
+
+select * from courses left join teachers on courses.teacherid = teachers.teacherid UNION select * from courses right join teachers on courses.teacherid = teachers.teacherid;
+
+
+problem 1 :Create a table offices(officecode int, country varchar(50)), insert some values in there. Now create a new table newoffices with the
+schema same as the offices table, insert some values into it. Now copy all the values from the offices table to the newoffices table.
+
+Create table offices(officecode int, country varchar(50)); 
+create table newoffices (officecode int, country varchar(50));
+insert into newoffices values(100, "UK");
+insert into offices values(101,'india'); 
+insert into newoffices (select * from offices);
+
+
+subquery ex-
+
+select * from offices;
+
+ officecode | country  |                                                                                               +------------+----------+  
+| 3          | India    |                      
+| 4          | Thailand |  
+| 2          | USA      
+
+select * from employees;                                                                                         +-----------+----------+------------+
+| firstname | lastname | officecode | 
++-----------+----------+------------+ 
+| f1        | l1       | 1          |
+| f3        | l3       | 3          | 
+| f2        | l2       | 2          |                                                                                   +-----------+----------+------------+  
+
+SELECT
+lastName, firstName
+FROM
+employees
+WHERE
+officeCode IN (SELECT
+officeCode
+FROM
+offices
+WHERE
+country = 'USA');
+
+SELECT lastName, firstName FROM employees WHERE officeCode IN (SELECT officeCode FROM offices WHERE country = 'USA');
+
+
+create database sb101;
+use sb101;
+
+create table teachers(teacherid int, teachername varchar(20));
+insert into teachers values(1, "t1");
+insert into teachers values(2, "t2");
+insert into teachers values(3, "t3");
+
+create table courses(courseid int, coursename varchar(20), teacherid int);
+insert into courses values(1, "c1", 1);
+insert into courses values(2, "c2", 2);
+insert into courses values(3, "c3", 4);
+
+select * from teachers; 
+select * from courses;
+
+select coursename, teachername from courses INNER JOIN teachers ON courses.teacherid = teachers.teacherid;
+
+select coursename, teachername from courses, teachers where courses.teacherid = teachers.teacherid;
+
+select * from teachers; 
+select * from courses;
+
+select coursename, teachername from courses LEFT JOIN teachers ON courses.teacherid = teachers.teacherid;
+
+select coursename, teachername from courses RIGHT JOIN teachers ON courses.teacherid = teachers.teacherid;
+
+select * from courses LEFT JOIN teachers ON courses.teacherid = teachers.teacherid UNION select * from courses RIGHT JOIN teachers ON courses.teacherid = teachers.teacherid ;
+
+select coursename, teachername from courses LEFT JOIN teachers ON courses.teacherid = teachers.teacherid UNION select coursename, teachername from courses RIGHT JOIN teachers ON courses.teacherid = teachers.teacherid;
+
+
+CREATE table offices (officecode int, country varchar(10));
+insert into offices values(1, "India");
+
+CREATE table newoffices (officecode int, country varchar(10));
+insert into newoffices values(2, "USA");
+insert into newoffices values(3, "UK");
+
+select * from offices;
+select * from newoffices;
+
+insert into newoffices (select * from offices);
+
+create table employee (firstname varchar(10), lastname varchar(10), officecode int);
+insert into employee values("f1", "l1", 1);
+insert into employee values("f2", "l2", 2);
+insert into employee values("f10", "l10", 10);
+
+write a query to display fname and lname of employees sitting in newoffices?
+
+select firstname, lastname from employee where officecode IN (1,2,3);
+select firstname, lastname from employee where officecode IN (select officecode from newoffices);
+
+write a query to display fname and lname of employees sitting in newoffices?
+error?
+
+write a query to display fname and lname of employees sitting in USA newoffices?
+select firstname, lastname from employee where officecode IN (select officecode from newoffices where country = 'usa');
+
+
+create table person (id int, name varchar(10), email varchar(50));
+insert into person values(100, null, "something@gmail.com");
+insert into person values(101, "fname", "something@yahoo.com");
+
+select * from person;
+
+select ISNULL(10);
+select ISNULL(NULL);
+
+SELECT ISNULL(name) FROM PERSON;
+
+
+The demo database schema we'll design will be for a fictional bookstore.
+Let's start by creating a schema called bookstore and a table called category:
+
+CREATE TABLE bookstore.category
+( id int PRIMARY KEY,
+name varchar(255) NOT NULL UNIQUE,
+description varchar(255) NOT NULL );
+
+Creating a table for authors
+
+CREATE TABLE bookstore.authors
+( id int PRIMARY KEY,
+name varchar(255) NOT NULL,
+bio varchar(500) NOT NULL );
+
+Creating a table for books
+
+CREATE TABLE bookstore.books
+( id int PRIMARY KEY,
+title varchar(255) NOT NULL,
+description varchar(255) NOT NULL,
+ISBN char(13) NOT NULL,
+category_id INT NOT NULL,
+FOREIGN KEY(category_id)
+REFERENCES bookstore.category(id) );
+
+Connecting books and authors
+
+CREATE TABLE bookstore.books_authors ( book_id int REFERENCES bookstore.books (id),
+author_id int REFERENCES bookstore.authors (id),
+is_main_author BOOLEAN NOT NULL DEFAULT false,
+CONSTRAINT bill_product_pkey PRIMARY KEY (book_id, author_id) );
+
+
+One to One Relationship
+
+CREATE TABLE Country1
+(
+Pk_Country_Id INT PRIMARY KEY,
+Name VARCHAR(100),
+Officiallang VARCHAR(100),
+Size INT
+);
+
+CREATE TABLE UNrepresentative
+(
+Pk_UNrepresentative_Id INT PRIMARY KEY,
+Name VARCHAR(100),
+Gender VARCHAR(100),
+Fk_Country_Id int unique,
+FOREIGN KEY(Fk_Country_Id) REFERENCES Country1(Pk_Country_Id)
+);
+
+INSERT INTO Country1 VALUES (1,'Nigeria','English',923);
+INSERT INTO Country1 VALUES (2,'Ghana','English',238);
+INSERT INTO Country1 VALUES (3,'South Africa','English',219);
+INSERT INTO UNrepresentative VALUES (51,'Abubakar Ahmad','Male',1);
+INSERT INTO UNrepresentative VALUES (52,'Joseph Nkrumah','Male',2);
+INSERT INTO UNrepresentative VALUES (53,'Lauren Zuma','Female',4);
+SELECT * FROM Country
+SELECT * FROM UNrepresentative;
+
+
+One to Many Relationship
+
+CREATE TABLE Car
+(
+Pk_Car_Id INT PRIMARY KEY,
+Brand VARCHAR(100),
+Model VARCHAR(100)
+);
+
+CREATE TABLE Engineer
+(
+Pk_Engineer_Id INT PRIMARY KEY,
+FullName VARCHAR(100),
+MobileNo CHAR(11),
+Fk_Car_Id INT,
+FOREIGN KEY(Fk_Car_Id) REFERENCES Car(Pk_Car_Id)
+);
+
+INSERT INTO Car VALUES (1,'Benz','GLK350');
+INSERT INTO Car VALUES (2,'Toyota','Camry XLE');
+
+INSERT INTO Engineer VALUES(50,'Elvis Young','08038888888',2);
+INSERT INTO Engineer VALUES(51,'Bola Johnson','08020000000',1);
+INSERT INTO Engineer VALUES(52,'Kalu Ikechi','09098888888',1);
+INSERT INTO Engineer VALUES(53,'Smart Wonodu','08185555555',1);
+INSERT INTO Engineer VALUES(54,'Umaru Suleja','08056676666',1);
+SELECT * FROM Car;
+SELECT * FROM Engineer;
+
+Many to many
+
+CREATE TABLE Student(
+StudentID INT(10) PRIMARY KEY,
+Name VARCHAR(100),
+);CREATE TABLE Class(
+ClassID INT(10) PRIMARY KEY,
+Course VARCHAR(100),
+);CREATE TABLE StudentClassRelation(
+StudentID INT(15) NOT NULL,
+ClassID INT(14) NOT NULL,FOREIGN KEY (StudentID) REFERENCES Student(StudentID),
+FOREIGN KEY (ClassID) REFERENCES Class(ClassID),
+UNIQUE (StudentID, ClassID)
+);INSERT INTO Student ('Name')
+VALUES ('Olu Alfonso');INSERT INTO Student ('Name')
+VALUES ('Amarachi Chinda');
+INSERT INTO Class ('Course')
+VALUES ('Biology');INSERT INTO Class ('Course')
+VALUES ('Chemistry');INSERT INTO Class ('Type')
+VALUES ('Physics');INSERT INTO Class ('Type')
+VALUES ('English');INSERT INTO Class ('Type')
+VALUES ('Computer Science');INSERT INTO Class ('Type')
+VALUES ('History');INSERT INTO StudentClassRelation ('StudentID','ClassID')
+VALUES (1,2);INSERT INTO StudentClassRelation ('StudentID','ClassID')
+VALUES (1,4);INSERT INTO StudentClassRelation ('StudentID','ClassID')
+VALUES (1,6);INSERT INTO StudentClassRelation ('StudentID','ClassID')
+VALUES (2,3);INSERT INTO StudentClassRelation ('StudentID','ClassID')
+VALUES (2,1);INSERT INTO StudentClassRelation ('StudentID','ClassID')
+VALUES (2,6);
+INSERT INTO StudentClassRelation ('StudentID','ClassID')
+VALUES (2,1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
